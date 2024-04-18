@@ -52,7 +52,7 @@ class CustomerControllerTest {
     public void testDeleteCustomer() throws Exception {
         Customer customer = customerImpl.listCustomers().get(0);
 
-        mockMvc.perform(delete("/api/v1/customer/" + customer.getId())
+        mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, customer.getId())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         verify(customerService).deleteCustomerById(uuidArgumentCaptor.capture());
@@ -64,7 +64,7 @@ class CustomerControllerTest {
 
         Customer customer = customerImpl.listCustomers().get(0);
         given(customerService.getCustomerById(customer.getId())).willReturn(customer);
-        mockMvc.perform(get("/api/v1/customer/" + customer.getId()).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, customer.getId()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(customer.getId().toString())))
@@ -77,7 +77,7 @@ class CustomerControllerTest {
         customer.setId(null);
         customer.setVersion(null);
         given(customerService.createCustomer(any(Customer.class))).willReturn(customerImpl.listCustomers().get(1));
-        mockMvc.perform(post("/api/v1/customer").accept(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post(CustomerController.CUSTOMER_PATH).accept(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(customer)))
@@ -88,7 +88,7 @@ class CustomerControllerTest {
     @Test
     public void testUpdateCustomer() throws Exception {
         Customer customer = customerImpl.listCustomers().get(0);
-        mockMvc.perform(put("/api/v1/customer/" + customer.getId())
+        mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, customer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(customer)))
