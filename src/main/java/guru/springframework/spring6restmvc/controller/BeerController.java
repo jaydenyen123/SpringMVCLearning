@@ -60,4 +60,21 @@ public class BeerController {
         responseHeaders.add("Location", "/api/v1/beer/" + savedBeer.getId().toString());
         return new ResponseEntity(responseHeaders, HttpStatus.CREATED);
     }
+
+    /*
+    Customized exception handling allowed for this controller for any 404 not found error,
+    but only this controller, other controllers are not affected, move it to ControllerAdvice for
+    so it impact all controllers
+     */
+//    @ExceptionHandler(NotFoundException.class)
+//    public ResponseEntity handleNotFoundException() {
+//        return ResponseEntity.notFound().build();
+//    }
+
+    /*
+    For the ExceptionController and NotFoundException class, you only need one, the former gives you
+    more fine-grained control over what to throw in the error, the second just simplify that and just
+    let you output response
+     */
+
 }
