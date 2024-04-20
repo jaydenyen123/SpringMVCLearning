@@ -46,6 +46,11 @@ public class BeerController {
         return beerService.listBeers();
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/api/testMock")
+    public void getErrorBeer() {
+        throw new NotFoundException();
+    }
+
     @RequestMapping(value = BEER_PATH_ID, method = RequestMethod.GET)
     public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
         log.debug("Get Beer By Id");
@@ -66,10 +71,12 @@ public class BeerController {
     but only this controller, other controllers are not affected, move it to ControllerAdvice for
     so it impact all controllers
      */
-//    @ExceptionHandler(NotFoundException.class)
-//    public ResponseEntity handleNotFoundException() {
-//        return ResponseEntity.notFound().build();
-//    }
+    @ExceptionHandler(DemoException.class)
+    public ResponseEntity<Beer> handleDemoException() {
+        Beer newBeer = Beer.builder().beerName("BigBeer").build();
+        ResponseEntity<Beer> responseEntity = new ResponseEntity(newBeer, HttpStatus.BAD_REQUEST);
+        return responseEntity;
+    }
 
     /*
     For the ExceptionController and NotFoundException class, you only need one, the former gives you
