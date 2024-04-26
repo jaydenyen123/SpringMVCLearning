@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -141,6 +142,30 @@ class BeerControllerTest {
 
     }
 
+    @Test
+    void testUpdateBeerBlankName() throws Exception {
+        BeerDTO beer = beerServiceImpl.listBeers().get(0);
+        beer.setBeerName("");
+        given(beerService.updateBeerById(any(UUID.class), any())).willReturn(Optional.of(beer));
+        mockMvc.perform(put(BeerController.BEER_PATH_ID, beer.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beer)))
+                .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.length()", is(1)));
+    }
+
+    @Test
+    void testCreatedBeerNullBeerName() throws Exception {
+        BeerDTO beerDTO = BeerDTO.builder().build();
+        given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
+        MvcResult result = mockMvc.perform(post(BeerController.BEER_PATH)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(beerDTO)))
+                .andExpect(jsonPath("$.length()", is(6)))
+                .andExpect(status().isBadRequest()).andReturn();
+    }
 
     @Test
     void getBeerById() throws Exception {
@@ -152,6 +177,5 @@ class BeerControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(testBeer.getId().toString())))
                 .andExpect(jsonPath("$.beerName", is(testBeer.getBeerName())));
-//        System.out.println(beerController.getBeerById(UUID.randomUUID()));
     }
 }
