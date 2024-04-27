@@ -9,3 +9,15 @@ often stateless, where server does not maintain client state
 # URL vs URI
 The difference is URL locate and URI identify a resource in internet
 URL is a subset of URI
+
+# Hikari Data Pool
+When Spring starts up, it automatically starts a set of connections to the database server, in this 
+case -- MYSQL, and those connections are maintained in the Hikari Data Source Pool. 
+
+# Hibernate entity to SQL statement mapping
+You can setup properties like those in application.properties to allow Hibernate reflect upon the entities
+and create the SQL statements that will reflect on the entities to create the database
+
+# default SQL file name
+During database initialization, Hibernate will look for import.sql and Spring will look for schema.sql and data.sql
+at the root level for execution 
