@@ -21,3 +21,9 @@ and create the SQL statements that will reflect on the entities to create the da
 # default SQL file name
 During database initialization, Hibernate will look for import.sql and Spring will look for schema.sql and data.sql
 at the root level for execution 
+
+# Flyway
+
+Flyway is designed to perform DB migration task for Spring applications, it is meant only for DB structural changes
+and each time you want a new DB migration, you specify a script in certain name in certain folder, but the
+folder location can be overriden with spring properties
