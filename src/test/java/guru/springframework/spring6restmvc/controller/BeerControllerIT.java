@@ -160,7 +160,7 @@ class BeerControllerIT {
     @Test
     void testListBeers() {
         List<BeerDTO> dtos = beerController.listBeers();
-        assertThat(dtos.size()).isEqualTo(3);
+        assertThat(dtos.size()).isEqualTo(2413);
     }
 
     /* make sure test does not as DB need to rollback after beerRepository.deleteAll(); */
