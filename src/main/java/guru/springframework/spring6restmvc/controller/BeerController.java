@@ -3,6 +3,7 @@ package guru.springframework.spring6restmvc.controller;
 import guru.springframework.spring6restmvc.exception.DemoException;
 import guru.springframework.spring6restmvc.exception.NotFoundException;
 import guru.springframework.spring6restmvc.model.BeerDTO;
+import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +50,11 @@ public class BeerController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = BEER_PATH)
-    public List<BeerDTO> listBeers() {
-        return beerService.listBeers();
+    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName,
+                                   @RequestParam(required = false) BeerStyle beerStyle,
+                                   @RequestParam(required = false) Boolean showInventory) {
+
+        return beerService.listBeers(beerName, beerStyle, showInventory);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/testMock")

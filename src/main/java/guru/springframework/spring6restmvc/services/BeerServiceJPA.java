@@ -1,7 +1,9 @@
 package guru.springframework.spring6restmvc.services;
 
+import guru.springframework.spring6restmvc.entities.Beer;
 import guru.springframework.spring6restmvc.mappers.BeerMapper;
 import guru.springframework.spring6restmvc.model.BeerDTO;
+import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -24,10 +26,41 @@ public class BeerServiceJPA implements BeerService {
     private final BeerMapper beerMapper;
 
     @Override
-    public List<BeerDTO> listBeers() {
+    public List<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory) {
 
-        return beerRepository.findAll().stream().map(beerMapper::beerToBeerDto).collect(Collectors.toList());
+        List<Beer> beerList;
+
+        if(StringUtils.hasText(beerName) && beerStyle == null) {
+            beerList = listBeersByName(beerName);
+        }
+        else if(!StringUtils.hasText(beerName) && beerStyle != null) {
+            beerList = listBeersByStyle(beerStyle);
+        }
+        else if(StringUtils.hasText(beerName) && beerStyle != null) {
+            beerList = ListBeerByNameAndStyle(beerName, beerStyle);
+        }
+        else {
+            beerList = beerRepository.findAll();
+        }
+        if (showInventory != null && !showInventory) {
+            beerList.forEach(beer -> beer.setQuantityOnHand(null));
+        }
+        return beerList.stream().map(beerMapper::beerToBeerDto).collect(Collectors.toList());
     }
+
+    private List<Beer> ListBeerByNameAndStyle(String beerName, BeerStyle beerStyle) {
+        return beerRepository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + beerName + "%", beerStyle);
+    }
+
+
+    private List<Beer> listBeersByStyle(BeerStyle beerStyle) {
+        return beerRepository.findAllByBeerStyle(beerStyle);
+    }
+
+    private List<Beer> listBeersByName(String beerName) {
+        return beerRepository.findAllByBeerNameIsLikeIgnoreCase("%" + beerName + "%");
+    }
+
 
     @Override
     public Optional<BeerDTO> getBeerById(UUID id) {
